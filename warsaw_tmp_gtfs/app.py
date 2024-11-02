@@ -106,6 +106,13 @@ class WarsawTemporaryGTFS(impuls.App):
                         "            stop_times.stop_id = stops.stop_id)"
                     ),
                 ),
+                impuls.tasks.ExecuteSQL(
+                    "FixTramRoutes",
+                    (
+                        "UPDATE routes SET type = 0 WHERE "
+                        "short_name GLOB '[0-9]' OR short_name GLOB '[0-9][0-9]'"
+                    ),
+                ),
                 MergeRoutes(),
                 FixStops(),
                 UpdateStopNames(),
