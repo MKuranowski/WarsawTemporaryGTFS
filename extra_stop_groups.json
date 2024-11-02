@@ -1,0 +1,68 @@
+[
+    {
+        "id": "1452",
+        "slug": "cm_1920r",
+        "lat": 52.400107,
+        "lon": 21.168857
+    },
+    {
+        "id": "1501",
+        "slug": "cm_brodnowski_sw_wincentego",
+        "lat": 52.273596,
+        "lon": 21.043271
+    },
+    {
+        "id": "1555",
+        "slug": "cm_brodnowski_balkonowa",
+        "lat": 52.284833,
+        "lon": 21.041039
+    },
+    {
+        "id": "1669",
+        "slug": "zajezdnia_annopol",
+        "lat": 52.3029,
+        "lon": 21.02582
+    },
+    {
+        "id": "3256",
+        "slug": "spartanska",
+        "lat": 52.192941,
+        "lon": 20.995731
+    },
+    {
+        "id": "3257",
+        "slug": "instytut_reumatologii",
+        "lat": 52.191255,
+        "lon": 20.995477
+    },
+    {
+        "id": "3385",
+        "slug": "miasteczko_wilanow",
+        "lat": 52.1572,
+        "lon": 21.07623
+    },
+    {
+        "id": "3490",
+        "slug": "czersk_i",
+        "lat": 51.962597,
+        "lon": 21.223129
+    },
+    {
+        "id": "3501",
+        "slug": "cm_poludniowy_brama_pln",
+        "lat": 52.061923,
+        "lon": 20.898641
+    },
+    {
+        "id": "7063",
+        "slug": "jaracza",
+        "lat": 52.236186,
+        "lon": 21.031222
+    },
+    {
+        "id": "7064",
+        "slug": "al_3_maja",
+        "lat": 52.234915,
+        "lon": 21.033331
+    }
+]
