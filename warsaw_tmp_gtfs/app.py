@@ -4,7 +4,7 @@ from datetime import date
 import impuls
 
 from .extend_schedules import ExtendSchedules
-from .fix_stops import FixStops, UpdateStopNames
+from .fix_stops import FixStops, MergeVirtualStops, UpdateStopNames
 from .ftp import FTPResource, ZTMFeedProvider
 from .merge_routes import MergeRoutes
 from .update_feed_info import UpdateFeedInfo
@@ -115,6 +115,7 @@ class WarsawTemporaryGTFS(impuls.App):
                 ),
                 MergeRoutes(),
                 FixStops(),
+                MergeVirtualStops(),
                 UpdateStopNames(),
                 impuls.tasks.ExecuteSQL(
                     "UpdateRouteColors",
