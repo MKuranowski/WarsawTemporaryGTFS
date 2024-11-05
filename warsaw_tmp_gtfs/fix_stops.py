@@ -227,7 +227,7 @@ class UpdateStopNames(Task):
         town_code: str,
     ) -> bool:
         # No for stops in Warsaw
-        if town_code == "--":
+        if town_code == "-" or town == "Warszawa":
             return False
 
         # No for railway stations
