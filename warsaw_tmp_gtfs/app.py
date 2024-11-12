@@ -4,6 +4,7 @@ from datetime import date
 import impuls
 
 from .extend_schedules import ExtendSchedules
+from .fix_agency_id import FixAgencyID
 from .fix_stops import FixStops, MergeVirtualStops, UpdateStopNames
 from .ftp import FTPResource, ZTMFeedProvider
 from .merge_routes import MergeRoutes
@@ -82,10 +83,11 @@ class WarsawTemporaryGTFS(impuls.App):
             options=options,
             intermediate_provider=ZTMFeedProvider(),
             intermediate_pipeline_tasks_factory=lambda feed: [
+                FixAgencyID(feed.resource_name),
                 impuls.tasks.LoadGTFS(feed.resource_name),
                 impuls.tasks.ExecuteSQL(
                     "DropNonZTMRoutes",
-                    "DELETE FROM agencies WHERE agency_id = '5'",
+                    "DELETE FROM agencies WHERE agency_id != '2'",
                 ),
                 impuls.tasks.ExecuteSQL(
                     "FixAgencyData",
