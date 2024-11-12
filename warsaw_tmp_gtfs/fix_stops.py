@@ -98,6 +98,11 @@ class FixStops(Task):
         for raw_obj in stops["result"]:
             obj = {i["key"]: i["value"] for i in raw_obj["values"]}
             id = obj["zespol"] + obj["slupek"]
+
+            # Ignore metro stations
+            if id[1:3] in ("60", "61"):
+                continue
+
             self.external_stops_by_id[id] = ExternalStop(
                 id=id,
                 name=obj["nazwa_zespolu"],
