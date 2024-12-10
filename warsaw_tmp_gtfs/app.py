@@ -168,7 +168,7 @@ class WarsawTemporaryGTFS(impuls.App):
                         "wtp_md": "1",
                     },
                 ),
-                "extra_stop_groups.json": impuls.LocalResource("extra_stop_groups.json"),
+                "extra_stop_groups.csv": impuls.LocalResource("extra_stop_groups.csv"),
                 "calendar_exceptions.csv": impuls.tools.polish_calendar_exceptions.RESOURCE,
             },
         )

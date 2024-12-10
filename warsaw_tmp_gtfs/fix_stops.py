@@ -78,7 +78,7 @@ class FixStops(Task):
         self.seen_ids.clear()
         self.load_external_data(
             stops=r.resources["stops.json"].json(),
-            extra_groups=r.resources["extra_stop_groups.json"].json(),
+            extra_groups=list(r.resources["extra_stop_groups.csv"].csv()),
         )
         with r.db.transaction():
             r.db.raw_execute("UPDATE stops SET stop_id = concat('_gtfs_', stop_id)")
@@ -143,7 +143,10 @@ class FixStops(Task):
         for stop in self.external_stops_by_id.values():
             stops_by_group_id[stop.id[:4]].append(stop)
 
-        groups = [ExternalStopGroup(**i) for i in extra_groups]
+        groups = [
+            ExternalStopGroup(i["id"], i["slug"], float(i["lat"]), float(i["lon"]))
+            for i in extra_groups
+        ]
         for id, stops in stops_by_group_id.items():
             groups.append(
                 ExternalStopGroup(
