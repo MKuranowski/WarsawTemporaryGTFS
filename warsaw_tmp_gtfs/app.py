@@ -5,6 +5,7 @@ import impuls
 
 from .extend_schedules import ExtendSchedules
 from .fix_agency_id import FixAgencyID
+from .fix_direction_id import FixRailDirectionID
 from .fix_stops import FixStops, MergeVirtualStops, UpdateStopNames
 from .ftp import FTPResource, ZTMFeedProvider
 from .merge_routes import MergeRoutes
@@ -135,6 +136,7 @@ class WarsawTemporaryGTFS(impuls.App):
                         "  ELSE '880077' END"
                     ),
                 ),
+                FixRailDirectionID(),
                 UpdateTripHeadsigns(),
                 impuls.tasks.ExecuteSQL(
                     "MoveStopCodeToName",
