@@ -10,6 +10,8 @@ from impuls.db import DBConnection
 from impuls.model import Stop
 from impuls.task import Task, TaskRuntime
 
+EARTH_RADIUS_KM = 6364.9  # As per WGS84 at 52°N, https://planetcalc.com/7721/
+
 NO_POLISH_DIACRITICS_MAP = str.maketrans("ąćęłńóśźżĄĆĘŁŃÓŚŹŻ", "acelnoszzACELNOSZZ")
 
 NAME_WORD_NORMALIZE = {
@@ -26,6 +28,26 @@ def slugify_name(name: str) -> str:
     words = re.findall(r"\w+", name.lower().translate(NO_POLISH_DIACRITICS_MAP))
     words = [NAME_WORD_NORMALIZE.get(word, word) for word in words]
     return "_".join(words)
+
+
+def distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Calculates the distance between two points using the haversine formula
+    and `EARTH_RADIUS_KM`.
+    """
+    lat1 = math.radians(lat1)
+    lon1 = math.radians(lon1)
+    lat2 = math.radians(lat2)
+    lon2 = math.radians(lon2)
+
+    sin_dlat_half = math.sin((lat2 - lat1) * 0.5)
+    sin_dlon_half = math.sin((lon2 - lon1) * 0.5)
+
+    h = (
+        sin_dlat_half * sin_dlat_half
+        + math.cos(lat1) * math.cos(lat2) * sin_dlon_half * sin_dlon_half
+    )
+
+    return 2 * EARTH_RADIUS_KM * math.asin(math.sqrt(h))
 
 
 @dataclass
@@ -173,7 +195,7 @@ class FixStops(Task):
         if group_matches and len(group_matches) == 1:
             # Unique group match - use the group id with stop.code as the fixed id
             id = group_matches[0].id + stop.code
-            return id
+            return self.unmatch_if_too_far(stop, group_matches[0], id)
         elif group_matches:
             # Non-unique group match - resolve conflict by picking the closest group
             group = min(
@@ -181,16 +203,31 @@ class FixStops(Task):
                 key=lambda g: math.dist((g.lat, g.lon), (stop.lat, stop.lon)),
             )
             id = group.id + stop.code
-            return id
+            return self.unmatch_if_too_far(stop, group, id)
 
         # Unable to match :^(
         self.logger.warning(
-            "Failed to match stop %s (%s %s) with external data",
+            "Failed to match stop %s (%s %s) - unknown group slug",
             stop.id,
             stop.name,
             stop.code,
         )
         return ""
+
+    def unmatch_if_too_far(self, stop: Stop, group: ExternalStopGroup, new_id: str) -> str:
+        d = distance_km(stop.lat, stop.lon, group.lat, group.lon)
+        if d > 1.5:
+            self.logger.warning(
+                "Failed to match stop %s (%s %s) - group %s (%s) is too far (%.1f km)",
+                stop.id,
+                stop.name,
+                stop.code,
+                group.id,
+                group.slug,
+                d,
+            )
+            return ""
+        return new_id
 
 
 class UpdateStopNames(Task):
